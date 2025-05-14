@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Converter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #eef2ff, #c7d2fe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      width: 400px;
+    }
+    .card-header {
+      background: #4f46e5;
+      padding: 20px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .card-content {
+      padding: 24px;
+    }
+    .section {
+      background: #eef2ff;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #4338ca;
+      font-weight: 600;
+    }
+    input, select {
+      padding: 8px;
+      font-size: 16px;
+      margin-right: 8px;
+      border: 1px solid #c7d2fe;
+      border-radius: 4px;
+    }
+    .arrow {
+      text-align: center;
+      font-size: 24px;
+      color: #4f46e5;
+      margin-bottom: 24px;
+    }
+    .exchange-info {
+      background: #e0e7ff;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid #c7d2fe;
+    }
+    .rate-box {
+      background: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .highlight {
+      color: #4f46e5;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">Currency Converter</div>
+  <div class="card-content">
+    <div class="section">
+      <label>Amount to convert</label>
+      <input type="text" id="amount" value="1">
+      <select id="fromCurrency"></select>
+    </div>
+
+    <div class="arrow">&#8594;</div>
+
+    <div class="section">
+      <label>Converted amount</label>
+      <input type="text" id="converted" readonly>
+      <select id="toCurrency"></select>
+    </div>
+
+    <div class="exchange-info">
+      <h4>Exchange Rates</h4>
+      <div class="rate-box">
+        <p id="rate1"></p>
+      </div>
+      <div class="rate-box">
+        <p id="rate2"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const exchangeRates = {
+    'USD': 1,
+    'EUR': 0.93,
+    'GBP': 0.80,
+    'JPY': 151.50,
+    'AUD': 1.52,
+    'CAD': 1.36,
+    'CNY': 7.24,
+    'INR': 83.30,
+    'SGD': 1.35,
+    'CHF': 0.91,
+  };
+
+  const currencies = Object.keys(exchangeRates);
+
+  const amountInput = document.getElementById('amount');
+  const fromCurrencySelect = document.getElementById('fromCurrency');
+  const toCurrencySelect = document.getElementById('toCurrency');
+  const convertedInput = document.getElementById('converted');
+  const rate1 = document.getElementById('rate1');
+  const rate2 = document.getElementById('rate2');
+
+  currencies.forEach(cur => {
+    fromCurrencySelect.innerHTML += `<option value="${cur}">${cur}</option>`;
+    toCurrencySelect.innerHTML += `<option value="${cur}">${cur}</option>`;
+  });
+
+  fromCurrencySelect.value = 'USD';
+  toCurrencySelect.value = 'EUR';
+
+  function convertCurrency() {
+    const amount = parseFloat(amountInput.value);
+    const from = fromCurrencySelect.value;
+    const to = toCurrencySelect.value;
+    if (!isNaN(amount)) {
+      const result = (amount * exchangeRates[to]) / exchangeRates[from];
+      convertedInput.value = result.toFixed(4);
+      rate1.textContent = `1 ${from} = ${(exchangeRates[to] / exchangeRates[from]).toFixed(6)} ${to}`;
+      rate2.textContent = `1 ${to} = ${(exchangeRates[from] / exchangeRates[to]).toFixed(6)} ${from}`;
+    } else {
+      convertedInput.value = '';
+      rate1.textContent = '';
+      rate2.textContent = '';
+    }
+  }
+
+  amountInput.addEventListener('input', convertCurrency);
+  fromCurrencySelect.addEventListener('change', convertCurrency);
+  toCurrencySelect.addEventListener('change', convertCurrency);
+
+  convertCurrency();
+</script>
+</body>
+</html>
